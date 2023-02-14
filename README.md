@@ -1,4 +1,4 @@
-# zgo: Go + Zig = 💕
+# zgo: Go + Zig = 💕 | Zig and Go are best friends
 
 [Zig](https://ziglang.org) is an up-and-coming language that shares many similar qualities with Go. Many Go developers who encounter Zig find that Zig and Go appear to be best friends, and companies like Uber [use Zig](https://www.youtube.com/watch?v=SCj2J3HcEfc) as part of their Go build toolchain to ensure all of their developers have a seamless CGO/cross-compilation experience.
 
