@@ -78,12 +78,15 @@ func init() {
 		goBuildArgs := []string{"build"}
 		goBuildArgs = append(goBuildArgs, goBuildFlags()...)
 		hasLdFlags := false
-		for i, arg := range args {
-			if arg == "-ldflags" {
+		for i := 0; i < len(args); i++ {
+			if args[0] == "-ldflags" {
+				i += 1
 				goBuildArgs = append(goBuildArgs, "-ldflags")
-				goBuildArgs = append(goBuildArgs, args[i+1]+" "+goBuildLdFlags())
+				goBuildArgs = append(goBuildArgs, args[i]+" "+goBuildLdFlags())
 				hasLdFlags = true
+				continue
 			}
+			goBuildArgs = append(goBuildArgs, args[i])
 		}
 		if !hasLdFlags {
 			goBuildArgs = append(goBuildArgs, "-ldflags")
