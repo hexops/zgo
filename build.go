@@ -430,9 +430,8 @@ func ensureCloned(remoteURL, rev, dstDir string) error {
 }
 
 func execf(ctx context.Context, f io.Writer, verbose bool, env []string, dir, name string, args ...string) error {
-	cmdLine := strings.Join(append([]string{name}, args...), " ")
 	if verbose {
-		fmt.Fprintf(f, "zgo: $ %s\n", cmdLine)
+		fmt.Fprintf(f, "zgo: $ %s\n", formatCmdLine(name, args...))
 	}
 	cmd := exec.CommandContext(ctx, name, args...)
 	cmd.Stderr = f
@@ -440,9 +439,22 @@ func execf(ctx context.Context, f io.Writer, verbose bool, env []string, dir, na
 	cmd.Dir = dir
 	cmd.Env = env
 	if err := cmd.Run(); err != nil {
-		return errors.Wrap(err, cmdLine)
+		return errors.Wrap(err, formatCmdLine(name, args...))
 	}
 	return nil
+}
+
+func formatCmdLine(name string, args ...string) string {
+	cmdLine := make([]string, 0, 1+len(args))
+	cmdLine = append(cmdLine, name)
+	for _, arg := range args {
+		if strings.Contains(arg, " ") {
+			cmdLine = append(cmdLine, fmt.Sprintf(`'%s'`, arg))
+			continue
+		}
+		cmdLine = append(cmdLine, arg)
+	}
+	return strings.Join(cmdLine, " ")
 }
 
 // enforcePath modifies and returns the env, with dir guaranteed to be first on the PATH.
