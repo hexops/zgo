@@ -46,10 +46,9 @@ type Config struct {
 func LoadConfig(file string, out *Config) error {
 	_, err := toml.DecodeFile(file, out)
 	if err != nil {
-		if os.IsNotExist(err) {
-			return nil
+		if !os.IsNotExist(err) {
+			return err
 		}
-		return err
 	}
 
 	// Default config values.
