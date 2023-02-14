@@ -26,7 +26,6 @@ func init() {
 
 	// Handles calls to our subcommand.
 	handler := func(args []string) error {
-		_ = flagSet.Parse(args)
 		ctx := context.Background()
 
 		// Load zgo.toml configuration if present.
@@ -76,7 +75,21 @@ func init() {
 		env := os.Environ()
 		env = enforcePATH(env, filepath.Dir(zigExe))
 
-		err = execf(ctx, os.Stderr, true, env, "", "go", append([]string{"build"}, goBuildFlags()...)...)
+		goBuildArgs := []string{"build"}
+		goBuildArgs = append(goBuildArgs, goBuildFlags()...)
+		hasLdFlags := false
+		for i, arg := range args {
+			if arg == "-ldflags" {
+				goBuildArgs = append(goBuildArgs, "-ldflags")
+				goBuildArgs = append(goBuildArgs, args[i+1]+" "+goBuildLdFlags())
+				hasLdFlags = true
+			}
+		}
+		if !hasLdFlags {
+			goBuildArgs = append(goBuildArgs, "-ldflags")
+			goBuildArgs = append(goBuildArgs, goBuildLdFlags())
+		}
+		err = execf(ctx, os.Stderr, true, env, "", "go", goBuildArgs...)
 		if err != nil {
 			return errors.Wrap(err, "zgo")
 		}
@@ -190,6 +203,19 @@ func goCXXZigFlags(cfg Config) string {
 	}
 }
 
+func goBuildLdFlags() string {
+	switch targetGOOS() {
+	case "windows":
+		return ""
+	case "linux":
+		return ""
+	case "darwin":
+		return "-s -w -linkmode external"
+	default:
+		panic("unhandled Zig OS (this is a bug, please report it)")
+	}
+}
+
 func goBuildFlags() []string {
 	switch targetGOOS() {
 	case "windows":
@@ -197,7 +223,7 @@ func goBuildFlags() []string {
 	case "linux":
 		return nil
 	case "darwin":
-		return []string{"-buildmode=pie", "-ldflags", "-s -w -linkmode external"}
+		return []string{"-buildmode=pie"}
 	default:
 		panic("unhandled Zig OS (this is a bug, please report it)")
 	}
