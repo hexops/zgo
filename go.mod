@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/BurntSushi/toml v1.2.1
-	github.com/hexops/cmder v1.0.1
+	github.com/hexops/cmder v1.0.2
 	github.com/mholt/archiver/v4 v4.0.0-alpha.7
 )
 
