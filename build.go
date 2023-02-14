@@ -79,8 +79,8 @@ func init() {
 		goBuildArgs = append(goBuildArgs, goBuildFlags()...)
 		hasLdFlags := false
 		for i := 0; i < len(args); i++ {
-			if args[0] == "-ldflags" {
-				i += 1
+			if args[i] == "-ldflags" {
+				i++
 				goBuildArgs = append(goBuildArgs, "-ldflags")
 				goBuildArgs = append(goBuildArgs, args[i]+" "+goBuildLdFlags())
 				hasLdFlags = true
