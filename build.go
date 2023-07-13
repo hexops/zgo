@@ -272,7 +272,7 @@ func downloadExtractZig(version, dst, archiveFileTmpPath string) error {
 		stripPathComponents = 0
 	}
 	archiveFileTmpPath = archiveFileTmpPath + "." + extension
-	url := fmt.Sprintf("https://ziglang.org/builds/zig-%s-%s-%s.%s", zigOS(hostGOOS), zigArch(hostGOARCH), version, extension)
+	url := fmt.Sprintf("https://pkg.machengine.org/zig/zig-%s-%s-%s.%s", zigOS(hostGOOS), zigArch(hostGOARCH), version, extension)
 	_ = os.RemoveAll(archiveFileTmpPath)
 	if err := os.MkdirAll(filepath.Dir(archiveFileTmpPath), os.ModePerm); err != nil {
 		return errors.Wrap(err, "MkdirAll")
